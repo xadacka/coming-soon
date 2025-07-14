@@ -6,6 +6,50 @@ class Coming_Soon_By_Florian_IE {
     public function init() {
         $this->options = get_option( 'csbf_options' );
         add_action( 'template_redirect', array( $this, 'maybe_show_coming_soon' ) );
+        add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_menu' ), 999 );
+        add_action( 'admin_init', array( $this, 'process_toggle' ) );
+    }
+
+    public function add_admin_bar_menu( $wp_admin_bar ) {
+        $is_enabled = isset( $this->options['enabled'] ) && $this->options['enabled'];
+        $status_text = $is_enabled ? 'On' : 'Off';
+
+        // Add the main menu item
+        $wp_admin_bar->add_node( array(
+            'id'    => 'csbf-menu',
+            'title' => 'Coming Soon: ' . $status_text,
+            'href'  => '#',
+            'meta'  => array(
+                'class' => 'csbf-admin-bar'
+            )
+        ) );
+
+        // Add the toggle link
+        $toggle_url = wp_nonce_url( admin_url( '?csbf_toggle=1' ), 'csbf_toggle_status' );
+        $wp_admin_bar->add_node( array(
+            'id'     => 'csbf-toggle',
+            'parent' => 'csbf-menu',
+            'title'  => $is_enabled ? 'Turn Off' : 'Turn On',
+            'href'   => $toggle_url,
+        ) );
+
+        // Add link to settings
+        $wp_admin_bar->add_node( array(
+            'id'     => 'csbf-settings',
+            'parent' => 'csbf-menu',
+            'title'  => 'Settings',
+            'href'   => admin_url( 'admin.php?page=coming-soon-by-florian-ie' ),
+        ) );
+    }
+
+    public function process_toggle() {
+        if ( isset( $_GET['csbf_toggle'] ) && check_admin_referer( 'csbf_toggle_status' ) ) {
+            $options = get_option( 'csbf_options' );
+            $options['enabled'] = isset( $options['enabled'] ) && $options['enabled'] ? 0 : 1;
+            update_option( 'csbf_options', $options );
+            wp_redirect( remove_query_arg( array( 'csbf_toggle', '_wpnonce' ) ) );
+            exit;
+        }
     }
 
     public function maybe_show_coming_soon() {

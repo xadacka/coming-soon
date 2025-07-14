@@ -7,10 +7,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <?php
+        $options = get_option( 'csbf_options' );
+        $color1 = ! empty( $options['gradient_color_1'] ) ? $options['gradient_color_1'] : '#ee7752';
+        $color2 = ! empty( $options['gradient_color_2'] ) ? $options['gradient_color_2'] : '#e73c7e';
+        $color3 = ! empty( $options['gradient_color_3'] ) ? $options['gradient_color_3'] : '#23a6d5';
+        $color4 = ! empty( $options['gradient_color_4'] ) ? $options['gradient_color_4'] : '#23d5ab';
+    ?>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, <?php echo $color1; ?>, <?php echo $color2; ?>, <?php echo $color3; ?>, <?php echo $color4; ?>);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             display: flex;
@@ -90,21 +97,40 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        .logo-container {
+            margin-bottom: 20px;
+        }
+        .logo {
+            max-height: 100px;
+            max-width: 80%;
+            width: auto;
+            height: auto;
+        }
     </style>
     <?php wp_head(); ?>
 </head>
 <body>
+    <?php
+        $logo_url = isset( $options['logo_url'] ) ? $options['logo_url'] : '';
+        $title = isset( $options['title'] ) && ! empty( $options['title'] ) ? $options['title'] : 'Coming Soon';
+        $text = isset( $options['text'] ) && ! empty( $options['text'] ) ? $options['text'] : "This site is under construction. Please check back later.\nIf you have a password, you can enter it below to unlock the site.";
+        $footer_text = isset( $options['footer_text'] ) && ! empty( $options['footer_text'] ) ? $options['footer_text'] : 'powered by <a href="https://florian.ie">florian.ie</a>';
+    ?>
     <div class="container">
-        <h1 style="color: #fff !important;">Coming Soon</h1>
-        <p style="color: #fff !important;">This site is under construction.<br>Please check back later.</p>
-        <p style="color: #fff !important;">If you have a password, you can enter it below to unlock the site.</p>
+        <?php if ( ! empty( $logo_url ) ) : ?>
+            <div class="logo-container">
+                <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?> Logo" class="logo">
+            </div>
+        <?php endif; ?>
+        <h1 style="color: #fff !important;"><?php echo esc_html( $title ); ?></h1>
+        <p style="color: #fff !important;"><?php echo nl2br( esc_html( $text ) ); ?></p>
         <form method="post">
             <input type="password" name="csbf_password" placeholder="Enter password">
             <input type="submit" value="Unlock">
         </form>
     </div>
     <div class="footer">
-        powered by <a href="https://florian.ie">florian.ie</a>
+        <?php echo wp_kses_post( $footer_text ); ?>
     </div>
     <?php wp_footer(); ?>
 </body>
