@@ -3,7 +3,7 @@
  * Plugin Name:       Coming Soon by florian.ie
  * Plugin URI:        https://florian.ie
  * Description:       Displays a coming soon page for your website.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Florian
  * Author URI:        https://florian.ie
  * License:           GPL v2 or later
