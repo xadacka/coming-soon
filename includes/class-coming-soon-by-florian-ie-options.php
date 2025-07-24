@@ -251,7 +251,6 @@ class Coming_Soon_By_Florian_IE_Options {
         if ( isset( $input['send_503_status'] ) ) {
             $new_input['send_503_status'] = absint( $input['send_503_status'] );
         }
-
         return $new_input;
     }
 
